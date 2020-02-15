@@ -1,3 +1,5 @@
+VERSION = $(shell cat ./VERSION)
+
 all: slow-lint lint
 
 slow-lint:
