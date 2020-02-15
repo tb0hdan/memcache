@@ -108,9 +108,10 @@ func (mc *CacheType) UnsafeDelete(key string) {
 	if idx < len(mc.items)-1 {
 		copy(mc.items[idx:], mc.items[idx+1:])
 	}
-
-	mc.items[len(mc.items)-1] = nil
-	mc.items = mc.items[:len(mc.items)-1]
+	if len(mc.items) >= 1 {
+		mc.items[len(mc.items)-1] = nil
+		mc.items = mc.items[:len(mc.items)-1]
+	}
 }
 
 // Delete - removes item from cache
