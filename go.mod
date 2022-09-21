@@ -1,3 +1,3 @@
 module github.com/tb0hdan/memcache
 
-go 1.13
+go 1.18

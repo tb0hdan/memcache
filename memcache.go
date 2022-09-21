@@ -72,6 +72,15 @@ func (mc *CacheType) SetEx(key string, value interface{}, expires int64) {
 	}
 }
 
+// GetEx - get key/value pair with expiration
+func (mc *CacheType) GetEx(key string) (*ValueType, bool) {
+	mc.m.RLock()
+	defer mc.m.RUnlock()
+
+	valueType, ok := mc.cache[key]
+	return valueType, ok
+}
+
 // Len - returns cache length
 func (mc *CacheType) Len() (cacheSize int64) {
 	cacheSize = int64(len(mc.cache))
