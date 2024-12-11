@@ -20,10 +20,11 @@ type ValueType struct {
 
 // CacheType - cache structure with bound methods
 type CacheType struct {
-	cache  map[string]*ValueType
-	items  []*ValueType
-	m      sync.RWMutex
-	ticker *time.Ticker
-	done   chan struct{}
-	logger Logger
+	cache              map[string]*ValueType
+	items              []*ValueType
+	m                  sync.RWMutex
+	ticker             *time.Ticker
+	done               chan struct{}
+	logger             Logger
+	lockWithKeyTimeout time.Duration
 }

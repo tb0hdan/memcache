@@ -2,6 +2,10 @@ package memcache
 
 import "time"
 
+const (
+	LockWithKeyDefaultTimeout = 10 * time.Millisecond
+)
+
 // Get - fetch item from cache with ok indicating status of the operation
 func (mc *CacheType) Get(key string) (value interface{}, ok bool) {
 	mc.m.RLock()
@@ -162,12 +166,32 @@ func (mc *CacheType) Stop() {
 	mc.logger.Debug("Memcache is saying goodbye!")
 }
 
+func (mc *CacheType) SetLockWithKeyTimeout(timeout time.Duration) {
+	mc.lockWithKeyTimeout = timeout
+}
+
+func (mc *CacheType) LockWithKey(key string) {
+	for {
+		if _, ok := mc.Get(key); !ok {
+			mc.Set(key, struct{}{})
+			break
+		} else {
+			time.Sleep(mc.lockWithKeyTimeout)
+		}
+	}
+}
+
+func (mc *CacheType) UnlockWithKey(key string) {
+	mc.Delete(key)
+}
+
 // New - prepare and populate memcache instance
 func New(logger Logger) (memCache *CacheType) {
 	memCache = &CacheType{cache: make(map[string]*ValueType),
-		done:   make(chan struct{}),
-		ticker: time.NewTicker(1 * time.Second),
-		logger: logger,
+		done:               make(chan struct{}),
+		ticker:             time.NewTicker(1 * time.Second),
+		logger:             logger,
+		lockWithKeyTimeout: LockWithKeyDefaultTimeout,
 	}
 	go memCache.Evictor()
 

@@ -7,3 +7,4 @@ Memory cache with benefits
 
 - Key expiration
 - Redis Sorted set emulation
+- Lock/Unlock with key
